@@ -120,7 +120,7 @@ exports.signUp = async (req, res) => {
         success: false,
         message: "OTP not found",
       });
-    } else if (otp !== recentOtp) {
+    } else if (otp !== recentOtp[0].otp) {
       // Invalid OTP
       return res.status(400).json({
         success: false,
@@ -170,6 +170,7 @@ exports.login = async (req, res) => {
     // get data from req body
     const { email, password } = req.body;
 
+    
     // validation data
     if (!email || !password)
       return res.status(403).json({
@@ -179,6 +180,7 @@ exports.login = async (req, res) => {
 
     // user check exist or not
     const user = await User.findOne({ email }).populate("additionalDetails");
+    console.log("user -> ", user);
     if (!user)
       res.status(401).json({
         success: false,

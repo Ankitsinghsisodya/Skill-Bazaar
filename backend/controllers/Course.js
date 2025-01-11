@@ -50,7 +50,7 @@ exports.createCourse = async (req, res) => {
       })
     }
     if (!status || status === undefined) {
-      status = "Draft"
+      status = "draft"
     }
     // Check if the user is an instructor
     const instructorDetails = await User.findById(userId, {

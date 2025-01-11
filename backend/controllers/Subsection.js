@@ -1,7 +1,8 @@
 const Subsection = require("../models/SubSection");
 const Section = require("../models/Section");
+const mongoose = require("mongoose");
 const { uploadImageToCloudinary } = require("../utils/imageUploader");
-require('dotenv').config();
+require("dotenv").config();
 
 // create Subsection
 
@@ -12,36 +13,39 @@ exports.createSubSection = async (req, res) => {
     // extract file/video
     const video = req.files.videoFile;
     // validation
+    console.log("ankit");
+    console.log("sectionId ->", sectionId);
     if (!sectionId || !title || !timeDuration || !description || !video)
       return res.status(400).json({
         success: false,
         message: "Missing Properties",
       });
+    console.log("ayush", "ankit");
+    console.log("video ->", video);
     // upload video to cloudinary
     const uploadDetails = await uploadImageToCloudinary(
       video,
       process.env.FOLDER_NAME
     );
+    console.log("sumit");
     // create a subssection
     const SubSectionDetails = await Subsection.create({
       title,
       timeDuration,
       description,
-      videoUrl: uploadDetails.secrure_url,
+      videoUrl: uploadDetails.secure_url,
     });
     // update Section with this subsection ObjectId
     await Section.findByIdAndUpdate(
-      {
-        sectionId,
-      },
+      sectionId,
       {
         $push: {
-          subSection: SubSectionDetails._id,
+          subSection: new mongoose.Types.ObjectId(SubSectionDetails._id),
         },
       },
       { new: true }
     )
-      .poplate("subSection")
+      .populate("subSection")
       .exec();
     //return respones
     return res.status(200).json({
@@ -113,9 +117,9 @@ exports.updateSubSection = async (req, res) => {
     });
   } catch (error) {
     res.status(500).json({
-        success: false,
-        message: "Unable to update Subsection, please try again",
-        error: error.message,
-    })
+      success: false,
+      message: "Unable to update Subsection, please try again",
+      error: error.message,
+    });
   }
 };

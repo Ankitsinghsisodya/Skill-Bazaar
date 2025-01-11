@@ -1,0 +1,10 @@
+{
+    "name": "project",
+    "version": "1.0.0",
+    "scripts": {
+        "dev": "concurrently -n \"BACKEND,FRONTEND\" -c \"bgBlue.white,bgYellow.black\" \"npm run dev --prefix backend\" \"npm run dev --prefix frontend\""
+    },
+    "devDependencies": {
+      "concurrently": "^8.0.1"
+    }
+  }
